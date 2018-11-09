@@ -1,6 +1,8 @@
 #ifndef RFW95W_DRIVER_H
 #define RFW95W_DRIVER_H
 
+#include <stdint.h>
+
 typedef enum{
   RFW95W_LORA_REG_FIFIO = 0x00,
   RFW95W_LORA_REG_OP_MODE,
@@ -72,6 +74,14 @@ typedef enum{
   RFW95W_LORA_REG_AGC_THRESH2,
   RFW95W_LORA_REG_AGC_THRESH3,
 }RFW95W_LORA_REG_ADDR;
+
+uint8_t RFW95WLORAReadSingle(RFW95W_LORA_REG_ADDR addr);
+void RFW95WLORAReadBurst(RFW95W_LORA_REG_ADDR addr, uint8_t *read_data, uint8_t read_data_size);
+void RFW95WLORAReadFIFO(RFW95W_LORA_REG_ADDR addr, uint8_t *read_data, uint8_t read_data_size);
+
+void RFW95WLORAWriteSingle(RFW95W_LORA_REG_ADDR addr, uint8_t write_data);
+void RFW95WLORAWriteBurst(RFW95W_LORA_REG_ADDR addr, uint8_t* write_data, uint8_t write_data_size);
+void RFW95WLORAWriteFIFO(RFW95W_LORA_REG_ADDR addr, uint8_t* write_data, uint8_t write_data_size);
 
 
 
