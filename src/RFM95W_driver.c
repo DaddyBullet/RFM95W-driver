@@ -385,3 +385,195 @@ int8_t RFM95WLORAReadPacketRssi()
 {
   return ((int8_t)RFM95WLORAReadSingle(RFM95W_LORA_REG_PKT_RSSI_VALUE)) - 137;
 }
+
+
+uint8_t RFM95WLORASetSymbTimeout(uint16_t symb_timeout)
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+
+  symb_timeout &= 0b1111111111;
+
+  uint8_t reg_1 = RFM95WLORAReadSingle(RFM95W_LORA_REG_MODEM_CONFIG_2);
+  reg_1 &= 0b11111100;
+  reg_1 |= (uint8_t)(symb_timeout >> 8);
+  RFM95WLORAWriteSingle(RFM95W_LORA_REG_MODEM_CONFIG_2, reg_1);
+
+  uint8_t reg_2 = (uint8_t)symb_timeout;
+  RFM95WLORAWriteSingle(RFM95W_LORA_REG_SYMB_TIMEOUT_LSB, reg_2);
+
+  return 0;
+}
+
+uint8_t RFM95WLORASetPreambleLength(uint16_t pre_length)
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+
+  uint8_t reg_buf[2] = {(uint8_t)(pre_length >> 8), (uint8_t)pre_length};
+
+  RFM95WLORAWriteBurst(RFM95W_LORA_REG_PREAMBLE_MSB, reg_buf, 2);
+  return 0;
+}
+
+uint8_t RFM95WLORASetPayloadLength(uint8_t payload_length)
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+
+  RFM95WLORAWriteSingle(RFM95W_LORA_REG_PAYLOAD_LENGTH, payload_length);
+  return 0;
+}
+
+uint8_t RFM95WLORAReadPayloadLength()
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+
+  return RFM95WLORAReadSingle(RFM95W_LORA_REG_PAYLOAD_LENGTH);
+}
+
+uint8_t RFM95WLORASetPayloadMaxLength(uint8_t payload_max_length)
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+
+  RFM95WLORAWriteSingle(RFM95W_LORA_REG_MAX_PAYLOAD_LENGTH, payload_max_length);
+  return 0;
+}
+
+
+uint8_t RFM95WLORASetFifoAddrPtr(uint8_t addr)
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+
+  RFM95WLORAWriteSingle(RFM95W_LORA_REG_FIFO_ADDR_PTR, addr);
+  return 0;
+}
+
+uint8_t RFM95WLORAReadFifoTxBase()
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+
+  return RFM95WLORAReadSingle(RFM95W_LORA_REG_FIFO_TX_BASE_ADDR);
+}
+
+uint8_t RFM95WLORASetFifoTxBase(uint8_t tx_base_addr)
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+
+  RFM95WLORAWriteSingle(RFM95W_LORA_REG_FIFO_TX_BASE_ADDR, tx_base_addr);
+  return 0;
+}
+
+uint8_t RFM95WLORAReadFifoRxBase()
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+
+  return RFM95WLORAReadSingle(RFM95W_LORA_REG_FIFO_RX_BASE_ADDR);
+}
+
+uint8_t RFM95WLORASetFifoRxBase(uint8_t rx_base_addr)
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+
+  RFM95WLORAWriteSingle(RFM95W_LORA_REG_FIFO_RX_BASE_ADDR, rx_base_addr);
+  return 0;
+}
+
+uint8_t RFM95WLORAReadFifoRxNb()
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+
+  return RFM95WLORAReadSingle(RFM95W_LORA_REG_RX_NB_BYTES);
+}
+
+uint8_t RFM95WLORAReadFifoRxDataAddr()
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+
+  return RFM95WLORAReadSingle(RFM95W_LORA_REG_FIFO_RX_CURRENT_ADDR);
+}
+
+
+uint8_t RFM95WLORAWritePacket(uint8_t *data, uint8_t length)
+{
+  if(RFM95WLORAReadMode() != RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+
+  RFM95WLORASetPayloadLength(length);
+  uint8_t tx_base = RFM95WLORAReadFifoTxBase();
+
+  RFM95WLORASetFifoAddrPtr(tx_base);
+  RFM95WLORAWriteFIFO(RFM95W_LORA_REG_FIFO, data, length);
+
+  return 0;
+}
+
+uint8_t RFM95WLORATransmitPacket(uint8_t *data, uint8_t length)
+{
+  if(RFM95WLORAWritePacket(data, length) == 0)
+  {
+    RFM95WLORASetMode(RFM95W_LORA_MODE_TX);
+    return 0;
+  }
+  return (uint8_t)-1;
+}
+
+
+uint8_t RFM95WLORAReadPacket(uint8_t *data, uint8_t length)
+{
+  if(RFM95WLORAReadMode() != RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+  uint8_t count = RFM95WLORAReadFifoRxNb();
+  uint8_t rx_data_base_addr = RFM95WLORAReadFifoRxDataAddr();
+  if(!count)
+  {
+    return 0;
+  }
+
+  if(count > length)
+  {
+    return (uint8_t)-2;
+  }
+
+  RFM95WLORASetFifoAddrPtr(rx_data_base_addr);
+  RFM95WLORAReadBurst(RFM95W_LORA_REG_FIFO, data, count);
+
+  return count;
+}

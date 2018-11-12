@@ -57,4 +57,30 @@ uint8_t RFM95WLORASetBandwidth(RFM95W_LORA_BANDWIDTH bw);
 uint8_t RFM95WLORASetCodingRate(RFM95W_LORA_CR cr);
 uint8_t RFM95WLORASetSpreadingFactor(RFM95W_LORA_SF sf);
 
+int8_t RFM95WLORAReadRssi();
+int8_t RFM95WLORAReadPacketRssi();
+
+// Timeout = symb_timeout * Ts
+uint8_t RFM95WLORASetSymbTimeout(uint16_t symb_timeout);
+uint8_t RFM95WLORASetPreambleLength(uint16_t pre_length);
+uint8_t RFM95WLORASetPayloadLength(uint8_t payload_length);
+uint8_t RFM95WLORAReadPayloadLength();
+uint8_t RFM95WLORASetPayloadMaxLength(uint8_t payload_max_length);
+
+uint8_t RFM95WLORASetFifoAddrPtr(uint8_t addr);
+uint8_t RFM95WLORAReadFifoTxBase();
+uint8_t RFM95WLORASetFifoTxBase(uint8_t tx_base_addr);
+uint8_t RFM95WLORAReadFifoRxBase();
+uint8_t RFM95WLORASetFifoRxBase(uint8_t rx_base_addr);
+uint8_t RFM95WLORAReadFifoRxNb();
+uint8_t RFM95WLORAReadFifoRxDataAddr();
+
+uint8_t RFM95WLORAWritePacket(uint8_t *data, uint8_t length);
+uint8_t RFM95WLORATransmitPacket(uint8_t *data, uint8_t length);
+
+// ret val 0xFE = not enough space in buff
+uint8_t RFM95WLORAReadPacket(uint8_t *data, uint8_t length);
+
+
+
 #endif /* RFM95W_DRIVER_H */
