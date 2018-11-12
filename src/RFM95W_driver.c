@@ -108,3 +108,129 @@ uint8_t RFM95WLORAClearIrqFlag(RFM95W_LORA_IRQ_FLAG flag)
   RFM95WLORAWriteSingle(RFM95W_LORA_REG_IRQ_FLAGS, flag);
   return (uint8_t)flag;
 }
+
+
+uint8_t RFM95WLORASetFreq(uint32_t freq, uint32_t xosc_freq)
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+
+  float resolution = ((float)(1 << 19)) / ((float)xosc_freq);
+  uint32_t reg_val = (uint32_t)(((float)freq) * resolution);
+  uint8_t reg_buf[3] = {(uint8_t)(reg_val >> 16), (uint8_t)(reg_val >> 8), (uint8_t)(reg_val) };
+  RFM95WLORAWriteBurst(RFM95W_LORA_REG_FRF_MSB, reg_buf, 3);
+  return 0;
+}
+
+uint8_t RFM95WLORASetFreq868()
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+
+  // 868000000/61.03515625 = 14221312
+  uint32_t reg_val = 14221312;
+  uint8_t reg_buf[3] = {(uint8_t)(reg_val >> 16), (uint8_t)(reg_val >> 8), (uint8_t)(reg_val) };
+  RFM95WLORAWriteBurst(RFM95W_LORA_REG_FRF_MSB, reg_buf, 3);
+  return 0;
+}
+
+uint8_t RFM95WLORASetPaConfig(uint8_t pa_select, uint8_t max_power, uint8_t output_power)
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+  pa_select &= 1;
+  max_power &= 0b111;
+  output_power &= 0b1111;
+
+  uint8_t config = (pa_select << 7) | (max_power << 4) | (output_power);
+
+  RFM95WLORAWriteSingle(RFM95W_LORA_REG_PA_CONFIG, config);
+
+  return 0;
+}
+
+uint8_t RFM95WLORASetPaSelect(uint8_t pa_select)
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+  pa_select &= 1;
+
+  uint8_t reg = RFM95WLORAReadSingle(RFM95W_LORA_REG_PA_CONFIG);
+  reg &= 0b01111111;
+  reg |= (pa_select << 7);
+  RFM95WLORAWriteSingle(RFM95W_LORA_REG_PA_CONFIG, reg);
+  return 0;
+}
+
+uint8_t RFM95WLORASetPaMaxPower(uint8_t max_power)
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+  max_power &= 0b111;
+
+  uint8_t reg = RFM95WLORAReadSingle(RFM95W_LORA_REG_PA_CONFIG);
+  reg &= 0b10001111;
+  reg |= (max_power << 4);
+  RFM95WLORAWriteSingle(RFM95W_LORA_REG_PA_CONFIG, reg);
+  return 0;
+}
+
+
+uint8_t RFM95WLORASetOcpConfig(uint8_t osp_on, uint8_t ocp_trim)
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+  osp_on &= 1;
+  ocp_trim &= 0b11111;
+
+  uint8_t config = (osp_on << 5) | (ocp_trim);
+
+  RFM95WLORAWriteSingle(RFM95W_LORA_REG_OCP, config);
+
+  return 0;
+}
+
+
+uint8_t RFM95WLORASetOcpOn(uint8_t osp_on)
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+  osp_on &= 1;
+
+  uint8_t reg = RFM95WLORAReadSingle(RFM95W_LORA_REG_OCP);
+  reg &= 0b11011111;
+  reg |= (osp_on << 5);
+  RFM95WLORAWriteSingle(RFM95W_LORA_REG_OCP, reg);
+
+  return 0;
+}
+
+uint8_t RFM95WLORASetOcpTrim(uint8_t osp_trim)
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+  osp_trim &= 1;
+
+  uint8_t reg = RFM95WLORAReadSingle(RFM95W_LORA_REG_OCP);
+  reg &= 0b11100000;
+  reg |= (osp_trim);
+  RFM95WLORAWriteSingle(RFM95W_LORA_REG_OCP, reg);
+
+  return 0;
+}
