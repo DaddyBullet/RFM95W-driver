@@ -303,7 +303,7 @@ uint8_t RFM95WLORASetLnaBoostHf(uint8_t lna_boost_hf)
 }
 
 
-uint8_t RFM95WLORAModemConfig(RFM95W_LORA_BANDWIDTH bw, RFM95W_LORA_CR cr, RFM95W_LORA_SF sf, \
+uint8_t RFM95WLORASetModemConfig(RFM95W_LORA_BANDWIDTH bw, RFM95W_LORA_CR cr, RFM95W_LORA_SF sf, \
                               RFM95W_LORA_HEADER_MODE hm, \
                               RFM95W_LORA_TX_MODE tx_mode, \
                               RFM95W_LORA_RX_PAYLOAD_CRC rx_crc, \
@@ -328,4 +328,60 @@ uint8_t RFM95WLORAModemConfig(RFM95W_LORA_BANDWIDTH bw, RFM95W_LORA_CR cr, RFM95
   RFM95WLORAWriteSingle(RFM95W_LORA_REG_MODEM_CONFIG_3, reg_3);
 
   return 0;
+}
+
+uint8_t RFM95WLORASetBandwidth(RFM95W_LORA_BANDWIDTH bw)
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+
+  uint8_t reg = RFM95WLORAReadSingle(RFM95W_LORA_REG_MODEM_CONFIG);
+  reg &= 0b00001111;
+  reg |= ((uint8_t)bw << 4);
+  RFM95WLORAWriteSingle(RFM95W_LORA_REG_MODEM_CONFIG, reg);
+
+  return 0;
+}
+
+uint8_t RFM95WLORASetCodingRate(RFM95W_LORA_CR cr)
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+
+  uint8_t reg = RFM95WLORAReadSingle(RFM95W_LORA_REG_MODEM_CONFIG);
+  reg &= 0b11110001;
+  reg |= ((uint8_t)cr << 1);
+  RFM95WLORAWriteSingle(RFM95W_LORA_REG_MODEM_CONFIG, reg);
+
+  return 0;
+}
+
+uint8_t RFM95WLORASetSpreadingFactor(RFM95W_LORA_SF sf)
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+
+  uint8_t reg = RFM95WLORAReadSingle(RFM95W_LORA_REG_MODEM_CONFIG_2);
+  reg &= 0b00001111;
+  reg |= ((uint8_t)sf << 4);
+  RFM95WLORAWriteSingle(RFM95W_LORA_REG_MODEM_CONFIG_2, reg);
+
+  return 0;
+}
+
+
+int8_t RFM95WLORAReadRssi()
+{
+  return ((int8_t)RFM95WLORAReadSingle(RFM95W_LORA_REG_RSSI_VALUE)) - 137;
+}
+
+int8_t RFM95WLORAReadPacketRssi()
+{
+  return ((int8_t)RFM95WLORAReadSingle(RFM95W_LORA_REG_PKT_RSSI_VALUE)) - 137;
 }
