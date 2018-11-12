@@ -40,5 +40,17 @@ uint8_t RFM95WLORASetOcpOn(uint8_t osp_on);
 uint8_t RFM95WLORASetOcpTrim(uint8_t osp_trim);
 
 uint8_t RFM95WLORASetLnaConfig(uint8_t lna_gain, uint8_t lna_boost_lf, uint8_t lna_boost_hf);
+uint8_t RFM95WLORASetLnaGain(uint8_t lna_gain);
+uint8_t RFM95WLORASetLnaBoostLf(uint8_t lna_boost_lf);
+// lna_boost_hf 00 -> Default LNA current
+// lna_boost_hf 11 -> Boost on, 150% LNA current
+uint8_t RFM95WLORASetLnaBoostHf(uint8_t lna_boost_hf);
+
+uint8_t RFM95WLORAModemConfig(RFM95W_LORA_BANDWIDTH bw, RFM95W_LORA_CR cr, RFM95W_LORA_SF sf, \
+                              RFM95W_LORA_HEADER_MODE hm, \
+                              RFM95W_LORA_TX_MODE tx_mode, \
+                              RFM95W_LORA_RX_PAYLOAD_CRC rx_crc, \
+                              RFM95W_LORA_NODE node, \
+                              RFM95W_LORA_AGC_AUTO agc);
 
 #endif /* RFM95W_DRIVER_H */

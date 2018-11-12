@@ -234,3 +234,98 @@ uint8_t RFM95WLORASetOcpTrim(uint8_t osp_trim)
 
   return 0;
 }
+
+
+uint8_t RFM95WLORASetLnaConfig(uint8_t lna_gain, uint8_t lna_boost_lf, uint8_t lna_boost_hf)
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+  lna_gain &= 0b111;
+  lna_boost_lf &= 0b11;
+  lna_boost_hf &= 0b11;
+
+  uint8_t config = (lna_gain << 5) | (lna_boost_lf << 3) | (lna_boost_hf);
+
+  RFM95WLORAWriteSingle(RFM95W_LORA_REG_LNA, config);
+
+  return 0;
+}
+
+
+uint8_t RFM95WLORASetLnaGain(uint8_t lna_gain)
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+  lna_gain &= 0b111;
+
+  uint8_t reg = RFM95WLORAReadSingle(RFM95W_LORA_REG_LNA);
+  reg &= 0b00011111;
+  reg |= (lna_gain << 5);
+  RFM95WLORAWriteSingle(RFM95W_LORA_REG_LNA, reg);
+
+  return 0;
+}
+
+uint8_t RFM95WLORASetLnaBoostLf(uint8_t lna_boost_lf)
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+  lna_boost_lf &= 0b11;
+
+  uint8_t reg = RFM95WLORAReadSingle(RFM95W_LORA_REG_LNA);
+  reg &= 0b11100111;
+  reg |= (lna_boost_lf << 3);
+  RFM95WLORAWriteSingle(RFM95W_LORA_REG_LNA, reg);
+
+  return 0;
+}
+
+uint8_t RFM95WLORASetLnaBoostHf(uint8_t lna_boost_hf)
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+  lna_boost_hf &= 0b11;
+
+  uint8_t reg = RFM95WLORAReadSingle(RFM95W_LORA_REG_LNA);
+  reg &= 0b11111100;
+  reg |= (lna_boost_hf);
+  RFM95WLORAWriteSingle(RFM95W_LORA_REG_LNA, reg);
+
+  return 0;
+}
+
+
+uint8_t RFM95WLORAModemConfig(RFM95W_LORA_BANDWIDTH bw, RFM95W_LORA_CR cr, RFM95W_LORA_SF sf, \
+                              RFM95W_LORA_HEADER_MODE hm, \
+                              RFM95W_LORA_TX_MODE tx_mode, \
+                              RFM95W_LORA_RX_PAYLOAD_CRC rx_crc, \
+                              RFM95W_LORA_NODE node, \
+                              RFM95W_LORA_AGC_AUTO agc)
+{
+  if(RFM95WLORAReadMode() > RFM95W_LORA_MODE_STDBY)
+  {
+    return (uint8_t)-1;
+  }
+
+  uint8_t reg_1 = ((uint8_t)bw << 4) | ((uint8_t)cr << 1) | ((uint8_t)hm);
+  uint8_t reg_2 = RFM95WLORAReadSingle(RFM95W_LORA_REG_MODEM_CONFIG_2);
+  reg_2 &= 0b00000011;
+  reg_2 |= ((uint8_t)sf << 4) | ((uint8_t)tx_mode << 3) | ((uint8_t)rx_crc << 2);
+  uint8_t reg_3 = RFM95WLORAReadSingle(RFM95W_LORA_REG_MODEM_CONFIG_3);
+  reg_3 &= 0b11110011;
+  reg_3 |= ((uint8_t)node << 3) | ((uint8_t)agc << 2);
+
+  RFM95WLORAWriteSingle(RFM95W_LORA_REG_MODEM_CONFIG, reg_1);
+  RFM95WLORAWriteSingle(RFM95W_LORA_REG_MODEM_CONFIG_2, reg_2);
+  RFM95WLORAWriteSingle(RFM95W_LORA_REG_MODEM_CONFIG_3, reg_3);
+
+  return 0;
+}
