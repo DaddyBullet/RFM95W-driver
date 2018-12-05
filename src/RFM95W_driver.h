@@ -4,6 +4,8 @@
 #include "RFM95W_LORA_defines.h"
 #include "RFM95W_driver_SPI_handler.h"
 
+uint8_t RFM95WLORAReadVersion();
+
 uint8_t RFM95WLORASetIrqFlagsMask(uint8_t mask);
 uint8_t RFM95WLORAReadIrqFlagsMask();
 
@@ -12,6 +14,8 @@ uint8_t RFM95WLORAClearIrqFlags(uint8_t mask);
 
 uint8_t RFM95WLORAReadIrqFlag(RFM95W_LORA_IRQ_FLAG flag);
 uint8_t RFM95WLORAClearIrqFlag(RFM95W_LORA_IRQ_FLAG flag);
+
+uint8_t RFM95WLORASetDIO(RFM95W_LORA_DIO_TYPE dio, uint8_t func);
 
 RFM95W_LORA_MODE RFM95WLORAReadMode();
 
@@ -49,6 +53,11 @@ uint8_t RFM95WLORASetLnaBoostHf(uint8_t lna_boost_hf);
 uint8_t RFM95WLORASetModemConfig(RFM95W_LORA_BANDWIDTH bw, RFM95W_LORA_CR cr, RFM95W_LORA_SF sf, \
                               RFM95W_LORA_HEADER_MODE hm, \
                               RFM95W_LORA_TX_MODE tx_mode, \
+                              RFM95W_LORA_RX_PAYLOAD_CRC rx_crc);
+
+uint8_t RFM95WLORASetModemConfigFull(RFM95W_LORA_BANDWIDTH bw, RFM95W_LORA_CR cr, RFM95W_LORA_SF sf, \
+                              RFM95W_LORA_HEADER_MODE hm, \
+                              RFM95W_LORA_TX_MODE tx_mode, \
                               RFM95W_LORA_RX_PAYLOAD_CRC rx_crc, \
                               RFM95W_LORA_NODE node, \
                               RFM95W_LORA_AGC_AUTO agc);
@@ -57,8 +66,9 @@ uint8_t RFM95WLORASetBandwidth(RFM95W_LORA_BANDWIDTH bw);
 uint8_t RFM95WLORASetCodingRate(RFM95W_LORA_CR cr);
 uint8_t RFM95WLORASetSpreadingFactor(RFM95W_LORA_SF sf);
 
-int8_t RFM95WLORAReadRssi();
-int8_t RFM95WLORAReadPacketRssi();
+int16_t RFM95WLORAReadRssi();
+int16_t RFM95WLORAReadPacketRssi();
+int8_t RFM95WLORAReadPacketSnr();
 
 // Timeout = symb_timeout * Ts
 uint8_t RFM95WLORASetSymbTimeout(uint16_t symb_timeout);
