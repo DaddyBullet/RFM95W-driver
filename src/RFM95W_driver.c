@@ -57,7 +57,7 @@ uint8_t RFM95WLORAInitRegOpMode(uint8_t access_share_reg, uint8_t low_freq_mode_
   time_out_counter = 0;
   RFM95WLORASetLoraFsk(RFM95W_LORA_LORA_MODE);
   // Maybe here should be some delay
-  reg = (access_share_reg << 6) | (low_freq_mode_on << 3);
+  reg = (1 << 7) | (access_share_reg << 6) | (low_freq_mode_on << 3); //Since we put device into LORA_Mode
   RFM95WLORAWriteSingle(RFM95W_LORA_REG_OP_MODE, reg);
   RFM95WLORASetMode(mode);
   reg |= (uint8_t)mode;

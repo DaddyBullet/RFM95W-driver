@@ -26,7 +26,7 @@ uint8_t RFM95WLORASetFreqMode(uint8_t freq_mode);
 uint8_t RFM95WLORASetFreq(uint32_t freq, uint32_t xosc_freq);
 uint8_t RFM95WLORASetFreq868();
 // This will put modem in LORA mode
-uint8_t RFM95WLORAInitRegOpMode(uint8_t access_share_reg, uint8_t low_freq_mode_on, uint8_t mode);
+uint8_t RFM95WLORAInitRegOpMode(uint8_t access_share_reg, uint8_t low_freq_mode_on, RFM95W_LORA_MODE mode);
 
 uint8_t RFM95WLORASetPaConfig(uint8_t pa_select, uint8_t max_power, uint8_t output_power);
 uint8_t RFM95WLORASetPaSelect(uint8_t pa_select);
