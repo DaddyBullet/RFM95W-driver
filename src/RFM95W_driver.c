@@ -191,7 +191,7 @@ uint8_t RFM95WLORASetFreq(uint32_t freq, uint32_t xosc_freq)
   float resolution = ((float)(1 << 19)) / ((float)xosc_freq);
   uint32_t reg_val = (uint32_t)(((float)freq) * resolution);
   uint8_t reg_buf[3] = {(uint8_t)(reg_val >> 16), (uint8_t)(reg_val >> 8), (uint8_t)(reg_val) };
-  RFM95WLORAWriteBurst(RFM95W_LORA_REG_FRF_MSB, reg_buf, 3);
+  RFM95WLORAWriteBurst(RFM95W_LORA_REG_FR_MSB, reg_buf, 3);
   return 0;
 }
 
@@ -205,7 +205,7 @@ uint8_t RFM95WLORASetFreq868()
   // 868000000/61.03515625 = 14221312
   uint32_t reg_val = 14221312;
   uint8_t reg_buf[3] = {(uint8_t)(reg_val >> 16), (uint8_t)(reg_val >> 8), (uint8_t)(reg_val) };
-  RFM95WLORAWriteBurst(RFM95W_LORA_REG_FRF_MSB, reg_buf, 3);
+  RFM95WLORAWriteBurst(RFM95W_LORA_REG_FR_MSB, reg_buf, 3);
   return 0;
 }
 
@@ -458,6 +458,16 @@ uint8_t RFM95WLORASetSpreadingFactor(RFM95W_LORA_SF sf)
   RFM95WLORAWriteSingle(RFM95W_LORA_REG_MODEM_CONFIG_2, reg);
 
   return 0;
+}
+
+uint8_t RFM95WLORASetHopPeriod(uint8_t hop_period)
+{
+  return RFM95WLORAWriteSingle(RFM95WLORA_REG_HOP_PERIOD, hop_period);
+}
+
+uint8_t RFM95WLORAReadFhssPresentChannel()
+{
+  return RFM95WLORAReadSingle(RFM95WLORA_REG_HOP_CHANNEL) & 0b111111;
 }
 
 

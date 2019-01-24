@@ -66,6 +66,9 @@ uint8_t RFM95WLORASetBandwidth(RFM95W_LORA_BANDWIDTH bw);
 uint8_t RFM95WLORASetCodingRate(RFM95W_LORA_CR cr);
 uint8_t RFM95WLORASetSpreadingFactor(RFM95W_LORA_SF sf);
 
+uint8_t RFM95WLORASetHopPeriod(uint8_t hop_period);
+uint8_t RFM95WLORAReadPresentChannel();
+
 int16_t RFM95WLORAReadRssi();
 int16_t RFM95WLORAReadPacketRssi();
 int8_t RFM95WLORAReadPacketSnr();
